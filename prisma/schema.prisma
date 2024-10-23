@@ -20,3 +20,10 @@ model Employee {
   secret          String
 }
 
+model Application {
+  id              Int     @id @default(autoincrement())
+  employeeId      Int
+  leave_start_date DateTime
+  leave_end_date  DateTime
+}
+
