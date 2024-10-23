@@ -163,8 +163,38 @@ app.patch('/employees/:id', async (req, res) => {
 })
 
 app.post('/applications', async (req, res) => {
-  res.json({ message: 'Implement Me!' })
+  //res.json({ message: 'Implement Me!' })
+  try {
+    
+    const { empId, leave_start_date, leave_end_date } = req.body
+    if (!leave_start_date || !leave_end_date || !empId) {
+      return res.status(400).json({ msg: 'Please provide empId, leave_start_date, leave_end_date' });
+    }
+    const employee = await prisma.employee.findUnique({
+      where: {
+        id: empId,
+      },
+    });
+    if (!employee) {
+      return res.status(404).json({ msg: 'Employee not found' });
+    }
+
+    const newApplication = await prisma.application.create({
+      data: {
+        employeeId: empId,
+        leave_start_date: leave_start_date,
+        leave_end_date: leave_end_date
+      }
+    });
+    res.json(newApplication)
+  }
+  catch (e: any) {
+    console.error(e);
+    res.status(400).json({ errors: e.errors });
+  }
+
 })
+
 
 app.get('/applications/search', async (req, res) => {
   res.json({ message: 'Implement Me!' })
