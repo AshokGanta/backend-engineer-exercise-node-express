@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import express from 'express'
+import express, { response } from 'express'
 
 // ==> import generated route functions
 // import { addEmployeeRoutes } from './api/employeeRoutes';
@@ -29,7 +29,7 @@ const prisma = new PrismaClient();
    *               items: 
    *                 $ref: '#/components/schemas/Benefit'
    */
-app.get('/benefits', async (req, res) => {  
+app.get('/benefits', async (req, res) => {
   try {
     const benefits: any = await prisma.benefit.findMany()
     res.json(benefits);
@@ -37,7 +37,7 @@ app.get('/benefits', async (req, res) => {
   catch (e: any) {
     console.error(e);
     res.status(400).json({ errors: e.errors });
-  }    
+  }
 })
 
 /**
@@ -67,22 +67,22 @@ app.get('/employees/:id', async (req, res) => {
     const empId: number = parseInt(req.params.id, 10);
     const employee = await prisma.employee.findUnique({
       where: {
-        id:empId,
+        id: empId,
       },
     });
     if (!employee) {
       return res.status(404).json({ msg: 'Employee not found' });
     }
-    
+
     const { secret, ...rest } = employee;
- 
+
     res.json(rest)
-    
+
   }
   catch (e: any) {
     console.error(e);
     res.status(400).json({ errors: e.errors });
-  }    
+  }
 })
 
 /**
@@ -123,15 +123,51 @@ app.get('/employees/:id', async (req, res) => {
  *               $ref: '#/components/schemas/Employee'
  */
 app.patch('/employees/:id', async (req, res) => {
-  res.json({ message: 'Implement Me!'})   
+  //res.json({ message: 'Implement Me!'}) 
+
+  try {
+    const id: number = parseInt(req.params.id, 10);
+    const { firstName, lastName } = req.body
+
+    if (!firstName || !lastName) {
+      return res.status(400).json({ msg: 'Please provide first name or last name' });
+    }
+
+    const employee = await prisma.employee.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    if (!employee) {
+      res.status(404).json({ msg: 'Employee not found' });
+    }
+
+    const UpdateEmployee = await prisma.employee.update({
+      where: { id: id },
+      data: {
+        firstName: firstName,
+        lastName: lastName
+      }
+    });
+
+    const { secret, ...rest } = UpdateEmployee;
+
+    res.json(rest)
+
+  }
+  catch (e: any) {
+    console.error(e);
+    res.status(400).json({ errors: e.errors });
+  }
+
 })
 
 app.post('/applications', async (req, res) => {
-  res.json({ message: 'Implement Me!'})
+  res.json({ message: 'Implement Me!' })
 })
 
 app.get('/applications/search', async (req, res) => {
-  res.json({ message: 'Implement Me!'})
+  res.json({ message: 'Implement Me!' })
 })
 
 export default app;
