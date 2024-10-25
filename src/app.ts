@@ -200,28 +200,95 @@ app.get('/applications/search', async (req, res) => {
   //res.json({ message: 'Implement Me!' })
 
   try {
-    const { employeeId, firstName, lastName, page, limit } = req.body;
+    // const { employeeId, firstName, lastName, page, limit } = req.body;
+
+    const employeeId = parseInt(req.query.employeeId?.toString() ?? '0', 10);
+    const page = parseInt(req.query.page?.toString() ?? '0', 10);
+    const limit = parseInt(req.query.limit?.toString() ?? '0', 10);
+    const firstName = req.query.firstName?.toString();
+    const lastName = req.query.lastName?.toString();
 
 
     let applications;
 
     if (!employeeId && !firstName && !lastName && !page && !limit) {
+      console.log('no params provided')
       applications = await prisma.application.findMany()
     }
 
     else {
-      const pgNumber = page > 0 ? page : 1
-      const pgsize = limit > 0 ? limit : 5
+      console.log('any of the params are provided!')
 
-      if (!employeeId && !firstName && !lastName) {
-        applications = await prisma.application.findMany({
-          skip: (pgNumber) * pgsize,
-          take: pgsize,  // Limit the number of posts returned
-          orderBy: {
-            employeeId: 'desc',  // Order the posts by creation date, most recent first
-          },
-        });
+      if (page || limit) {
+        let pgNumber = page > 0 ? page : 1
+        const pgsize = limit > 0 ? limit : 5
+        console.log('either of page or limit provided!')
+        if (!employeeId && !firstName && !lastName) {
+          console.log('no first last, or employeeId provided!')
+          const appCount = await prisma.application.count()
+          if (appCount <= limit) {
+            console.log('app count is less than limit, pull all records!')
+            applications = await prisma.application.findMany({
+
+              orderBy: {
+                employeeId: 'desc',  
+              },
+            });
+          } else {
+            console.log('app count is greater than the limit so pagination took place for all records!')
+            applications = await prisma.application.findMany({
+              skip: (pgNumber - 1) * pgsize,
+              take: pgsize,  
+              orderBy: {
+                employeeId: 'desc',  
+              },
+            });
+          }
+
+        } else {
+          console.log('first, last or employeeId provided!')
+          const empId = await prisma.employee.findMany({
+            where: {
+              id: employeeId ? employeeId : undefined,
+              firstName: firstName ? firstName : undefined,
+              lastName: lastName ? lastName : undefined,
+            },
+            select: {
+              id: true
+            }
+          });
+
+          const id = empId[0].id
+          console.log('searching for employeeId' + id)
+          if (id) {
+            const appCount = await prisma.application.count({
+              where: { employeeId: id }
+            });
+            if(appCount <= pgsize){
+              applications = await prisma.application.findMany({
+                where: { employeeId: id },
+                orderBy: {
+                  employeeId: 'desc',  
+                },
+              });
+            }
+            else {
+              applications = await prisma.application.findMany({
+                where: { employeeId: id },
+                skip: (pgNumber - 1) * pgsize,
+                take: pgsize,  
+                orderBy: {
+                  employeeId: 'desc',  
+                },
+              });
+            }
+          } else {
+            return res.status(404).json({ msg: 'Employee not found' });
+          }
+        }
       } else {
+        console.log('else part')
+
         const empId = await prisma.employee.findMany({
           where: {
             id: employeeId ? employeeId : undefined,
@@ -234,20 +301,19 @@ app.get('/applications/search', async (req, res) => {
         });
 
         const id = empId[0].id
-
+        console.log('searching for employeeId' + id)
         if (id) {
           applications = await prisma.application.findMany({
             where: { employeeId: id },
-            skip: (pgNumber - 1) * pgsize,
-            take: pgsize,  // Limit the number of posts returned
             orderBy: {
-              employeeId: 'desc',  // Order the posts by creation date, most recent first
+              employeeId: 'desc',  
             },
           });
         } else {
           return res.status(404).json({ msg: 'Employee not found' });
         }
       }
+
 
     }
 
