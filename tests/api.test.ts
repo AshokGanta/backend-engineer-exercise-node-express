@@ -25,7 +25,8 @@ describe('Employee API Tests', () => {
   });
 
   it('should patch and employee first and last name', async () => {
-    const res = await request(app).patch('/employees/1').send({ firstName: 'Zoe', lastName: 'Sanchez'});    expect(res.statusCode).toEqual(200);
+    const res = await request(app).patch('/employees/1').send({ firstName: 'Zoe', lastName: 'Sanchez'});    
+    expect(res.statusCode).toEqual(200);
     expect(res.body.firstName).toEqual('Zoe');
     expect(res.body.lastName).toEqual('Sanchez');
   });
@@ -46,4 +47,40 @@ describe('Employee API Tests', () => {
 })
 
 describe('Application API Tests', () => {
+  // it('should return created application record for employee id', async () => {
+  //   const res = await request(app).post('/applications').send({ empId: 7, leave_start_date: "2014-09-11T13:02:17.000Z", leave_end_date: "2014-09-09T13:02:17.000Z"});
+  //   expect(res.statusCode).toEqual(200);
+  //   expect(res.body.leave_start_date).toEqual('2014-09-11T13:02:17.000Z');
+  //   expect(res.body.id).toBeGreaterThan(0);
+  // });
+
+  
+  it('should return a 400 when employee not found by id for application creation', async () => {
+    const res = await request(app).post('/applications').send({ empId: 30, leave_start_date: "2014-09-11T13:02:17.000Z", leave_end_date: "2014-09-09T13:02:17.000Z"});
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("Employee not found.");
+  });
+
+  it('should return a 400 when parameter missing for application creation', async () => {
+    const res = await request(app).post('/applications').send({ empId: 7, leave_end_date: "2014-09-09T13:02:17.000Z"});
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toEqual("leave_start_date can not be blank.");
+  });
+
+  it('should return all application records', async () => {
+        const res = await request(app).get('/applications/search');
+        expect(res.statusCode).toEqual(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
+        expect(res.body[0].employeeId).toEqual(7);
+        
+      });
+
+  it('should return  application records that much the query parameter', async () => {
+        const res = await request(app).get('/applications/search').query({empId: 7});;
+        expect(res.statusCode).toEqual(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
+
+      });
 })
