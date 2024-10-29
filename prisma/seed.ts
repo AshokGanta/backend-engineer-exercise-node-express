@@ -25,6 +25,20 @@ const employeeData: Prisma.EmployeeCreateInput[] = [
   },
 ]
 
+const applicationData: Prisma.ApplicationCreateInput[] = [
+  {
+    employeeId: 7,
+    leave_start_date: '2014-09-08T08:02:17-05:00',
+    leave_end_date: '2014-09-08T09:02:17-05:00'
+  },
+  {
+    employeeId: 8,
+    leave_start_date: '2014-09-08T08:02:17-05:00',
+    leave_end_date: '2014-09-08T09:02:17-05:00'
+  },
+]
+
+
 async function main() {
   console.log(`Start seeding`, process.env.DATABASE_URL)
   for (const u of benefitData) {
@@ -40,6 +54,13 @@ async function main() {
     })
   }
   console.log('seeded employees')
+
+  for (const u of applicationData) {
+    await prisma.application.create({
+      data: u,
+    })
+  }
+  console.log(`Seeded application`)
   console.log(`Seeding finished.`)
 }
 
