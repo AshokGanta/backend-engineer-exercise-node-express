@@ -47,12 +47,12 @@ describe('Employee API Tests', () => {
 })
 
 describe('Application API Tests', () => {
-  // it('should return created application record for employee id', async () => {
-  //   const res = await request(app).post('/applications').send({ empId: 7, leave_start_date: "2014-09-11T13:02:17.000Z", leave_end_date: "2014-09-09T13:02:17.000Z"});
-  //   expect(res.statusCode).toEqual(200);
-  //   expect(res.body.leave_start_date).toEqual('2014-09-11T13:02:17.000Z');
-  //   expect(res.body.id).toBeGreaterThan(0);
-  // });
+  it('should return created application record for employee id', async () => {
+    const res = await request(app).post('/applications').send({ empId: 1, leave_start_date: "2014-09-20T13:02:17.000Z", leave_end_date: "2014-09-29T13:02:17.000Z"});
+    expect(res.statusCode).toEqual(201);
+    expect(res.body.leave_start_date).toEqual('2014-09-20T13:02:17.000Z');
+    expect(res.body.id).toBeGreaterThan(0);
+  });
 
   
   it('should return a 400 when employee not found by id for application creation', async () => {

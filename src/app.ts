@@ -60,10 +60,11 @@ app.get('/benefits', async (req, res) => {
    *           application/json:
    *             schema: 
    *               $ref: '#/components/schemas/Employee'
-   */
+   */  
 app.get('/employees/:id', async (req, res) => {
 
   try {
+
     //Getting employee for requested employee id
     const empId: number = parseInt(req.params.id, 10);
     const employee = await prisma.employee.findUnique({
@@ -71,10 +72,12 @@ app.get('/employees/:id', async (req, res) => {
         id: empId,
       },
     });
+
     //Checking whether employee exists
     if (!employee) {
       return res.status(404).json({ "message": 'Employee not found.' });
     }
+
     //Excluding the field secret from the response payload
     const { secret, ...rest } = employee;
 
@@ -129,24 +132,27 @@ app.patch('/employees/:id', async (req, res) => {
   try {
     const id: number = parseInt(req.params.id, 10);
     const { firstName, lastName } = req.body
-    //checking for the request parameters
 
+    //checking for the request parameters
     if (!lastName) {
       return res.status(400).json({ "message": 'lastName can not be blank.' });
     }
     if (!firstName) {
       return res.status(400).json({ "message": 'firstName can not be blank.' });
     }
+
     //fetching the employee for the id provided
     const employee = await prisma.employee.findUnique({
       where: {
         id: id,
       },
     });
+
     //checking employees existance
     if (!employee) {
       return res.status(404).json({ "message": 'Employee not found.' });
     }
+
     //updating employee
     const UpdateEmployee = await prisma.employee.update({
       where: { id: id },
@@ -155,6 +161,7 @@ app.patch('/employees/:id', async (req, res) => {
         lastName: lastName
       }
     });
+
     //excluding the secret field from the response payload
     const { secret, ...rest } = UpdateEmployee;
 
@@ -206,7 +213,7 @@ app.patch('/employees/:id', async (req, res) => {
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "content": {
               "application/json; charset=utf-8": {
@@ -243,6 +250,7 @@ app.patch('/employees/:id', async (req, res) => {
 app.post('/applications', async (req, res) => {
 
   try {
+
     //checking for request params
     const { empId, leave_start_date, leave_end_date } = req.body
 
@@ -255,19 +263,19 @@ app.post('/applications', async (req, res) => {
     if (!empId) {
       return res.status(400).json({ "message": 'Employee id can not be blank.' });
     }
-    console.log(empId)
+    
     //fetching employee
     const employee = await prisma.employee.findUnique({
       where: {
         id: empId,
       },
     });
-    console.log("employee::" + JSON.stringify(employee))
-    console.log(typeof (empId))
+  
     //checking for employee existance
     if (!employee) {
       return res.status(400).json({ "message": 'Employee not found.' });
     }
+
     //creating application for the provided employee id
     const newApplication = await prisma.application.create({
       data: {
@@ -276,8 +284,7 @@ app.post('/applications', async (req, res) => {
         leave_end_date: leave_end_date
       }
     });
-    res.json(newApplication)
-    console.log("newApplication::" + JSON.stringify(newApplication))
+    res.status(201).json(newApplication)
   }
   catch (e: any) {
     console.error(e);
@@ -396,15 +403,16 @@ app.post('/applications', async (req, res) => {
 app.get('/applications/search', async (req, res) => {
 
   try {
+
     //parsing provided request params
     const employeeId = parseInt(req.query.employeeId?.toString() ?? '0', 10);
     const page = parseInt(req.query.page?.toString() ?? '0', 10);
     const limit = parseInt(req.query.limit?.toString() ?? '0', 10);
     const firstName = req.query.firstName?.toString();
     const lastName = req.query.lastName?.toString();
-    console.log('request:' + (!employeeId && !firstName && !lastName && !page && !limit))
-
+    
     let applications;
+
     //returning all application if no req param is provided
     if (!employeeId && !firstName && !lastName && !page && !limit) {
       applications = await prisma.application.findMany()
@@ -414,10 +422,12 @@ app.get('/applications/search', async (req, res) => {
       if (page || limit) {
         let pgNumber = page > 0 ? page : 1
         const pgsize = limit > 0 ? limit : 5
+        
         //no first last, or employeeId provided
         if (!employeeId && !firstName && !lastName) {
           //checking for application records count against limit provided
           const appCount = await prisma.application.count()
+
           if (appCount <= limit) {
             //application count is less than limit, pull all records
             applications = await prisma.application.findMany({
@@ -448,6 +458,7 @@ app.get('/applications/search', async (req, res) => {
               id: true
             }
           });
+
           //searching for employeeId
           const id = (empId && empId.length > 0) ? empId[0].id : 0
 
@@ -455,6 +466,7 @@ app.get('/applications/search', async (req, res) => {
             const appCount = await prisma.application.count({
               where: { employeeId: id }
             });
+
             //checking application count against limit
             if (appCount <= pgsize) {
               //application count is less than or equal to limit
@@ -483,7 +495,6 @@ app.get('/applications/search', async (req, res) => {
         }
       } else {
         //no page or limit is provided in the req param returning application for provided employee details
-
         const empId = await prisma.employee.findMany({
           where: {
             id: employeeId ? employeeId : undefined,
@@ -494,6 +505,7 @@ app.get('/applications/search', async (req, res) => {
             id: true
           }
         });
+
         //searching for employee
         const id = (empId && empId.length > 0) ? empId[0].id : 0
 
