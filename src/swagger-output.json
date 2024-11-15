@@ -1,68 +1,492 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Express API",
-    "description": "Express API Information",
-    "version": "1.0.0",
-    "contact": {
-      "name": "Amazing Developer"
-    },
-    "servers": [
-      "http://localhost:3000"
-    ]
+    "title": "Express-API",
+    "version": "1.0.0"
   },
-  "paths": {},
-  "components": {
-    "schemas": {
-      "Benefit": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "name": {
-            "type": "string"
+  "servers": [
+    {
+      "url": "http://localhost:5001"
+    }
+  ],
+  "paths": {
+    "/benefits": {
+      "get": {
+        "tags": [
+          "Benefits"
+        ],
+        "summary": "GET-benefits",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "642"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"282-I1/fddsyTi0fQs+bl5XfMD1yaFs\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Fri, 15 Nov 2024 18:56:34 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Medical Leave"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Family Leave"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees/{id}": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "GET-employee-By-Id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "93"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"5d-2ks/RWV17Gq6KRZw5jj1E36fzrg\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Fri, 25 Oct 2024 02:10:05 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 1,
+                  "firstName": "Jane 2",
+                  "lastName": "Smith 2",
+                  "date_of_birth": "2014-09-08T13:02:17.000Z"
+                }
+              }
+            }
           }
         }
       },
-      "Employee": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "date_of_birth": {
-            "type": "string"
-          },
-          "secret": {
-            "type": "string"
+      "patch": {
+        "tags": [
+          "Employee"
+        ],
+        "summary": "Update-Employee-By-Id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "firstName": "Jane 2",
+                  "lastName": "Smith 2"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "93"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"5d-2ks/RWV17Gq6KRZw5jj1E36fzrg\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Fri, 25 Oct 2024 02:10:15 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 1,
+                  "firstName": "Jane 2",
+                  "lastName": "Smith 2",
+                  "date_of_birth": "2014-09-08T13:02:17.000Z"
+                }
+              }
+            }
           }
         }
-      },
-      "Application": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
+      }
+    },
+    "/applications": {
+      "post": {
+        "tags": [
+          "Application"
+        ],
+        "summary": "Create-application",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": [
+                  {
+                    "empId": 7,
+                    "leave_start_date": "2014-09-19T13:02:17.000Z",
+                    "leave_end_date": "2014-09-29T13:02:17.000Z"
+                  },
+                  {
+                    "empId": 8,
+                    "leave_start_date": "2014-09-19T14:02:17.000Z",
+                    "leave_end_date": "2014-09-29T13:02:17.000Z"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "114"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"72-AIDSz41HVfkgZaquWodswvVbPuY\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Fri, 25 Oct 2024 02:10:24 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 12,
+                  "employeeId": 7,
+                  "leave_start_date": "2014-09-07T13:02:17.000Z",
+                  "leave_end_date": "2014-09-09T13:02:17.000Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/applications/search": {
+      "get": {
+        "tags": [
+          "Application"
+        ],
+        "summary": "GET-application",
+        "parameters": [
+          {
+            "name": "firstName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Jane 2"
           },
-          "employeeId": {
-            "type": "number"
+          {
+            "name": "lastName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Smith 2"
           },
-          "leave_start_date": {
-            "type": "string"
+          {
+            "name": "employeeId",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "7"
           },
-          "leave_end_date": {
-            "type": "string"
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "5"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "3"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "example": "Express"
+                }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json; charset=utf-8"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "example": "571"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "example": "W/\"23b-xBxtm2+BqB/1dam4DbbGDaruFTM\""
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "example": "Fri, 25 Oct 2024 02:10:48 GMT"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "example": "timeout=5"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "example-0": {
+                    "summary": "GET-application",
+                    "value": [
+                      {
+                        "id": 5,
+                        "employeeId": 7,
+                        "leave_start_date": "2014-09-01T13:02:17.000Z",
+                        "leave_end_date": "2014-09-09T13:02:17.000Z"
+                      },
+                      {
+                        "id": 6,
+                        "employeeId": 7,
+                        "leave_start_date": "2014-09-02T13:02:17.000Z",
+                        "leave_end_date": "2014-09-09T13:02:17.000Z"
+                      }
+                    ]
+                  },
+                  "example-1": {
+                    "summary": "GET-application",
+                    "value": [
+                      {
+                        "id": 1,
+                        "employeeId": 1,
+                        "leave_start_date": "2014-09-08T13:02:17.000Z",
+                        "leave_end_date": "2014-09-09T13:02:17.000Z"
+                      },
+                      {
+                        "id": 4,
+                        "employeeId": 1,
+                        "leave_start_date": "2014-09-09T13:02:17.000Z",
+                        "leave_end_date": "2014-09-09T13:02:17.000Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
-  },
-  "tags": []
+  }
 }
