@@ -7,4 +7,4 @@ const api = Router()
     .use(benefitController)
     .use(applicationController);
 
-export default Router().use('/api', api);
+export default Router().use('/', api);
