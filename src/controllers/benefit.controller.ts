@@ -11,7 +11,7 @@ const router = Router();
  * /benefits: {
       "post":{
         "tags": [
-          "Application"
+          "Benefit"
         ], 
         "summary": "Create-benefits",
         "operationId": "Create-benefits",

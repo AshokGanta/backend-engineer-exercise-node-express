@@ -13,7 +13,7 @@
     "/benefits": {
       "get": {
         "tags": [
-          "Benefits"
+          "Benefit"
         ],
         "summary": "GET-benefits",
         "responses": {
